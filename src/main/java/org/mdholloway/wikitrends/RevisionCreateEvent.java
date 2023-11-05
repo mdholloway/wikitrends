@@ -8,4 +8,9 @@ public class RevisionCreateEvent {
     public String database;
     @JsonProperty("page_title") public String pageTitle;
     @JsonProperty("page_namespace") public int pageNamespace;
+    public Performer performer;
+
+    public static class Performer {
+        @JsonProperty("user_is_bot") boolean isBot;
+    }
 }
