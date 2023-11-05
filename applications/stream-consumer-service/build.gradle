@@ -1,0 +1,8 @@
+quarkusDependenciesBuild {
+    dependsOn ':applications:stream-consumer-service:processJandexIndex'
+}
+
+dependencies {
+    implementation 'io.quarkus:quarkus-core'
+    implementation project(':components:stream-consumer')
+}

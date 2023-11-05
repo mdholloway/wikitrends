@@ -6,7 +6,7 @@ import io.quarkus.runtime.annotations.QuarkusMain;
 import jakarta.inject.Inject;
 
 @QuarkusMain
-public class Main implements QuarkusApplication {
+public class App implements QuarkusApplication {
 
     @Inject
     private MessageProcessor messageProcessor;

@@ -8,4 +8,8 @@ pluginManagement {
         id "${quarkusPluginId}" version "${quarkusPluginVersion}"
     }
 }
+
 rootProject.name='wikitrends'
+
+include 'applications:stream-consumer-service'
+include 'components:stream-consumer'
