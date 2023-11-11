@@ -21,7 +21,7 @@ public class MessageProcessor {
     @Inject
     private ObjectMapper objectMapper;
 
-    void processMessages() {
+    void start() {
         eventStreamsService.streamRevisionCreateEvents().subscribe().with(msg -> {
             try {
                 RevisionCreateEvent event = objectMapper.readValue(msg, RevisionCreateEvent.class);

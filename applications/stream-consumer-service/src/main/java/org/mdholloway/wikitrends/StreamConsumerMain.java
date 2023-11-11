@@ -6,14 +6,14 @@ import io.quarkus.runtime.annotations.QuarkusMain;
 import jakarta.inject.Inject;
 
 @QuarkusMain
-public class App implements QuarkusApplication {
+public class StreamConsumerMain implements QuarkusApplication {
 
     @Inject
     private MessageProcessor messageProcessor;
 
     @Override
     public int run(String... args) {
-        messageProcessor.processMessages();
+        messageProcessor.start();
 
         Quarkus.waitForExit();
         return 0;
