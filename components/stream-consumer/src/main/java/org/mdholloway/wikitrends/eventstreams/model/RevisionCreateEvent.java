@@ -1,4 +1,4 @@
-package org.mdholloway.wikitrends;
+package org.mdholloway.wikitrends.eventstreams.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
