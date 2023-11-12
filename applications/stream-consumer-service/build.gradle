@@ -3,6 +3,9 @@ quarkusDependenciesBuild {
 }
 
 dependencies {
-    implementation 'io.quarkus:quarkus-core'
-    implementation project(':components:stream-consumer')
+    implementation 'io.quarkus:quarkus-rest-client-reactive-jackson'
+    implementation 'io.quarkus:quarkus-smallrye-reactive-messaging-kafka'
+
+    implementation project(':components:database-support')
+    implementation project(':components:rest-support')
 }

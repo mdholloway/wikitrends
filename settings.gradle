@@ -13,4 +13,6 @@ rootProject.name='wikitrends'
 
 include 'applications:stream-analysis-service'
 include 'applications:stream-consumer-service'
-include 'components:stream-consumer'
+
+include 'components:database-support'
+include 'components:rest-support'
