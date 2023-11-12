@@ -19,7 +19,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.mdholloway.wikitrends.eventstreams.EventStreamsService;
 import org.mdholloway.wikitrends.eventstreams.model.RecentChangeEvent;
 
-class MessageProcessor {
+class RecentChangeConsumer {
 
     private static final String ENGLISH_WIKIPEDIA = "enwiki";
     private static final Pattern URI_PATTERN = Pattern.compile("^https://en.wikipedia.org/wiki/(.*)$");
@@ -63,7 +63,8 @@ class MessageProcessor {
                         if (revisionExists) {
                             return Uni.createFrom().voidItem();
                         }
-                        return pageService.getPageHtml(dbTitle, revision)
+                        return pageService
+                                .getPageHtml(dbTitle, revision)
                                 .chain(result -> articleStore.set(dbTitle + "/" + revision, result, 86400));
                     })
             ).collect(Collectors.toUnmodifiableSet());
