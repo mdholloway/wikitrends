@@ -16,8 +16,6 @@ import java.util.stream.Stream;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.mdholloway.wikitrends.eventstreams.EventStreamsService;
-import org.mdholloway.wikitrends.eventstreams.model.RecentChangeEvent;
 
 class RecentChangeConsumer {
 
@@ -31,7 +29,7 @@ class RecentChangeConsumer {
     private PageService pageService;
 
     @Channel("recent-changes-ready-for-analysis")
-    private Emitter<RecentChangeEvent> readyRecentChangeEmitter;
+    private Emitter<StoredRevisions> storedRevisionsEmitter;
 
     @Inject
     private ArticleStore articleStore;
@@ -40,22 +38,26 @@ class RecentChangeConsumer {
     private ObjectMapper objectMapper;
 
     void start() {
-        eventStreamsService.streamRecentChangeEvents().subscribe().with(message -> {
-            Optional<RecentChangeEvent> maybeRecentChange = parse(message);
+        eventStreamsService.streamRecentChanges().subscribe().with(message -> {
+            Optional<RecentChange> maybeRecentChange = parse(message);
             if (maybeRecentChange.isEmpty()) {
                 return;
             }
 
-            RecentChangeEvent recentChange = maybeRecentChange.get();
+            RecentChange recentChange = maybeRecentChange.get();
             if (!isInterestingRevision(recentChange)) {
                 return;
             }
 
             long oldRev = recentChange.revision.oldRev;
             long newRev = recentChange.revision.newRev;
+            String uri = recentChange.meta.uri;
 
-            Matcher dbTitleMatcher = URI_PATTERN.matcher(recentChange.meta.uri);
-            dbTitleMatcher.matches();
+            Matcher dbTitleMatcher = URI_PATTERN.matcher(uri);
+            if (!dbTitleMatcher.matches()) {
+                Log.error("Could not parse dbTitle from article uri: " + uri);
+                return;
+            }
             String dbTitle = dbTitleMatcher.group(1);
 
             Set<Uni<Void>> fetchAndStoreRequests = Stream.of(oldRev, newRev).map(revision ->
@@ -73,20 +75,23 @@ class RecentChangeConsumer {
                     .discardItems()
                     .log()
                     .subscribe()
-                    .with(result -> readyRecentChangeEmitter.send(recentChange));
+                    .with(result -> storedRevisionsEmitter.send(StoredRevisions.with(
+                            key(dbTitle, oldRev),
+                            key(dbTitle, newRev)
+                    )));
         });
     }
 
-    private Optional<RecentChangeEvent> parse(String message) {
+    private Optional<RecentChange> parse(String message) {
         try {
-            return Optional.of(objectMapper.readValue(message, RecentChangeEvent.class));
+            return Optional.of(objectMapper.readValue(message, RecentChange.class));
         } catch (JsonProcessingException e) {
             Log.error(e);
             return Optional.empty();
         }
     }
 
-    private static boolean isInterestingRevision(RecentChangeEvent recentChange) {
+    private static boolean isInterestingRevision(RecentChange recentChange) {
         return !recentChange.bot &&
                 recentChange.namespace == 0 &&
                 recentChange.type.equals("edit") &&

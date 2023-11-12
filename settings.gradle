@@ -16,3 +16,6 @@ include 'applications:stream-consumer-service'
 
 include 'components:database-support'
 include 'components:rest-support'
+include 'components:model'
+findProject(':components:model')?.name = 'model'
+

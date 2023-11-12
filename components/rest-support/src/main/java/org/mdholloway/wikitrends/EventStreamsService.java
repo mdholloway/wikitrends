@@ -1,4 +1,4 @@
-package org.mdholloway.wikitrends.eventstreams;
+package org.mdholloway.wikitrends;
 
 import io.smallrye.mutiny.Multi;
 import jakarta.ws.rs.GET;
@@ -14,10 +14,5 @@ public interface EventStreamsService {
     @GET
     @Path("/recentchange")
     @Produces("text/event-stream")
-    Multi<String> streamRecentChangeEvents();
-
-    @GET
-    @Path("/revision-create")
-    @Produces("text/event-stream")
-    Multi<String> streamRevisionCreateEvents();
+    Multi<String> streamRecentChanges();
 }

@@ -3,7 +3,8 @@ quarkusDependenciesBuild {
 }
 
 dependencies {
-    implementation 'io.quarkus:quarkus-arc'
+    implementation 'io.quarkus:quarkus-smallrye-reactive-messaging-kafka'
+    implementation "org.jsoup:jsoup:${jsoupVersion}"
 
     implementation "org.apache.flink:flink-clients:${flinkVersion}"
     implementation "org.apache.flink:flink-connector-files:${flinkVersion}"
@@ -18,5 +19,6 @@ dependencies {
     }
     implementation "org.apache.flink:flink-ml-uber-1.17:${flinkMLVersion}"
 
+    implementation project(':components:model')
     implementation project(':components:database-support')
 }
