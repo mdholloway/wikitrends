@@ -30,8 +30,8 @@ class MessageProcessor {
     @RestClient
     private PageService pageService;
 
-    @Channel("revision-titles")
-    private Emitter<String> revisionTitleEmitter;
+    @Channel("recent-changes-ready-for-analysis")
+    private Emitter<RecentChangeEvent> readyRecentChangeEmitter;
 
     @Inject
     private ArticleStore articleStore;
@@ -51,25 +51,28 @@ class MessageProcessor {
                 return;
             }
 
-            int oldRev = recentChange.revision.oldRev;
-            int newRev = recentChange.revision.newRev;
+            long oldRev = recentChange.revision.oldRev;
+            long newRev = recentChange.revision.newRev;
 
             Matcher dbTitleMatcher = URI_PATTERN.matcher(recentChange.meta.uri);
             dbTitleMatcher.matches();
             String dbTitle = dbTitleMatcher.group(1);
 
-            // TODO: Check for already-fetched previous page HTML in storage
-            Set<Uni<Void>> fetchAndStoreRequests = Stream.of(oldRev, newRev)
-                    .map(revision -> pageService.getPageHtml(dbTitle, revision)
-                            .chain(result -> articleStore.set(dbTitle + "/" + revision, result, 86400)))
-                    .collect(Collectors.toUnmodifiableSet());
+            Set<Uni<Void>> fetchAndStoreRequests = Stream.of(oldRev, newRev).map(revision ->
+                    articleStore.exists(key(dbTitle, revision)).flatMap(revisionExists -> {
+                        if (revisionExists) {
+                            return Uni.createFrom().voidItem();
+                        }
+                        return pageService.getPageHtml(dbTitle, revision)
+                                .chain(result -> articleStore.set(dbTitle + "/" + revision, result, 86400));
+                    })
+            ).collect(Collectors.toUnmodifiableSet());
 
             Uni.combine().all().unis(fetchAndStoreRequests)
                     .discardItems()
                     .log()
                     .subscribe()
-                    // TODO: Forward the RevisionCreateEvent to the revision analyzer
-                    .with(result -> Log.debug("Fetched and stored " + dbTitle + " revisions " + oldRev + " (prev) and " + newRev + " (cur)"));
+                    .with(result -> readyRecentChangeEmitter.send(recentChange));
         });
     }
 
@@ -87,5 +90,9 @@ class MessageProcessor {
                 recentChange.namespace == 0 &&
                 recentChange.type.equals("edit") &&
                 ENGLISH_WIKIPEDIA.equals(recentChange.wiki);
+    }
+
+    private static String key(String dbTitle, long revision) {
+        return dbTitle + "/" + revision;
     }
 }

@@ -15,8 +15,8 @@ public class RecentChangeEvent {
     public boolean minor;
 
     public static class Revision {
-        @JsonProperty("new") public int newRev;
-        @JsonProperty("old") public int oldRev;
+        @JsonProperty("new") public long newRev;
+        @JsonProperty("old") public long oldRev;
     }
 
     public static class Meta {

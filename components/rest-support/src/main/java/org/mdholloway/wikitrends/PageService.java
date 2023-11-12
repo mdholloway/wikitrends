@@ -18,5 +18,5 @@ public interface PageService {
     @Path("/page/html/{title}/{revision}")
     @Produces(MediaType.TEXT_HTML)
     Uni<String> getPageHtml(@PathParam("title") @Encoded String title,
-                            @PathParam("revision") int revision);
+                            @PathParam("revision") long revision);
 }

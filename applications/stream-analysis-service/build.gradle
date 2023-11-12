@@ -1,5 +1,5 @@
 quarkusDependenciesBuild {
-    dependsOn ':applications:stream-consumer-service:processJandexIndex'
+    dependsOn ':applications:stream-analysis-service:processJandexIndex'
 }
 
 dependencies {
