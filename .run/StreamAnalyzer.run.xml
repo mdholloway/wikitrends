@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ChangeAnalyzer" type="QuarkusGradleBridge">
+  <configuration default="false" name="StreamAnalyzer" type="QuarkusGradleBridge">
     <option name="arguments" />
     <option name="vmOptions" />
     <option name="workingDir" value="$PROJECT_DIR$/applications/stream-analysis-service" />
