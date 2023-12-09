@@ -34,6 +34,8 @@ services:
       - kafkastreams-network
 
   stream-consumer-service:
+    depends_on:
+      - kafka
     image: stream-consumer-service:1.0
     build:
       context: applications/stream-consumer-service
@@ -44,6 +46,8 @@ services:
       - kafkastreams-network
 
   stream-analysis-service:
+    depends_on:
+      - kafka
     image: stream-analysis-service:1.0
     build:
       context: applications/stream-analysis-service
