@@ -7,6 +7,5 @@ dependencies {
     implementation 'io.quarkus:quarkus-smallrye-reactive-messaging-kafka'
 
     implementation project(':components:model')
-    implementation project(':components:database-support')
     implementation project(':components:rest-support')
 }
