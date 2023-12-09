@@ -1,6 +1,13 @@
 version: '3.5'
 
 services:
+  mysql:
+    image: bitnami/mysql:latest
+    volumes:
+      - mysqldata:/bitnami/mysql
+    ports:
+      - "3306:3306"
+
   zookeeper:
     image: strimzi/kafka:0.19.0-kafka-2.5.0
     command: [
@@ -48,6 +55,7 @@ services:
   stream-analysis-service:
     depends_on:
       - kafka
+      - mysql
     image: stream-analysis-service:1.0
     build:
       context: applications/stream-analysis-service
@@ -60,3 +68,7 @@ services:
 networks:
   kafkastreams-network:
     name: ks
+
+volumes:
+  mysqldata:
+    driver: local

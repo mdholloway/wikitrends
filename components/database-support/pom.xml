@@ -4,12 +4,13 @@
 
     <parent>
         <groupId>org.mdholloway</groupId>
-        <artifactId>wikitrends-applications</artifactId>
+        <artifactId>wikitrends-components</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>wikitrends-stream-analysis-service</artifactId>
+    <artifactId>wikitrends-database-support</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <properties>
         <surefire-plugin.version>3.1.2</surefire-plugin.version>
@@ -35,26 +36,22 @@
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-kafka-streams</artifactId>
+            <artifactId>quarkus-hibernate-orm</artifactId>
+            <version>${quarkus.platform.version}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+            <artifactId>quarkus-jdbc-mysql</artifactId>
+            <version>${quarkus.platform.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.mdholloway</groupId>
-            <artifactId>wikitrends-database-support</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mdholloway</groupId>
             <artifactId>wikitrends-model</artifactId>
             <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-junit5</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
@@ -80,6 +77,18 @@
                         <maven.home>${maven.home}</maven.home>
                     </systemPropertyVariables>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.smallrye</groupId>
+                <artifactId>jandex-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>make-index</id>
+                        <goals>
+                            <goal>jandex</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
