@@ -1,8 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="StreamConsumer" type="QuarkusGradleBridge">
-    <option name="arguments" />
-    <option name="vmOptions" />
-    <option name="workingDir" value="$PROJECT_DIR$/applications/stream-consumer-service" />
-    <method v="2" />
-  </configuration>
-</component>
