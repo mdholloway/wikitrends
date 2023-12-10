@@ -13,10 +13,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+
 @ApplicationScoped
 public class StreamConsumerApp {
 
-    private static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER =
+            new ObjectMapper().configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     @RestClient
     private EventStreamsService eventStreamsService;

@@ -39,11 +39,6 @@
             <artifactId>quarkus-rest-client-reactive-jackson</artifactId>
             <version>${quarkus.platform.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.mdholloway</groupId>
-            <artifactId>wikitrends-database-support</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
