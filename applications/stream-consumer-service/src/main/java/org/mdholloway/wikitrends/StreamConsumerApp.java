@@ -32,7 +32,7 @@ public class StreamConsumerApp {
                 .onItem().transform(maybeRevisionCreate -> {
                     RevisionCreate revisionCreate = maybeRevisionCreate.get();
                     return Record.of(revisionCreate.revisionId, revisionCreate);
-                });
+                }).onFailure().retry().indefinitely();
     }
 
     @Outgoing("article-revision-tags-changes")
@@ -49,7 +49,7 @@ public class StreamConsumerApp {
                 .onItem().transform(maybeTagsChange -> {
                    TagsChange tagsChange = maybeTagsChange.get();
                    return Record.of(tagsChange.revisionId, tagsChange);
-                });
+                }).onFailure().retry().indefinitely();
     }
 
     protected static <T> Optional<T> parse(String message, Class<T> clazz) {
