@@ -2,14 +2,10 @@ package org.mdholloway.wikitrends;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
 
 @Entity
 public class RevertedRevision extends PanacheEntity {
 
-    private long id;
     private String wiki;
     private long pageId;
     private String pageTitle;
@@ -25,17 +21,6 @@ public class RevertedRevision extends PanacheEntity {
     }
 
     public RevertedRevision() {}
-
-    @Id
-    @SequenceGenerator(name = "idSequence", sequenceName = "id_seq", allocationSize = 1)
-    @GeneratedValue(generator = "idSequence")
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getWiki() {
         return wiki;

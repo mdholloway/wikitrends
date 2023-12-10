@@ -15,6 +15,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>database-support</module>
+        <module>kafka-support</module>
         <module>model</module>
         <module>rest-support</module>
     </modules>

@@ -81,12 +81,18 @@ services:
 
   reverted-revisions-service:
     depends_on:
+      kafka:
+        condition: service_started
       mysql:
         condition: service_healthy
     image: reverted-revisions-service:1.0
     build:
-      context: applications/stream-analysis-service
+      context: applications/reverted-revisions-service
       dockerfile: src/main/docker/Dockerfile.${QUARKUS_MODE:-jvm}
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    networks:
+      - kafkastreams-network
 
 networks:
   kafkastreams-network:

@@ -3,7 +3,6 @@ package org.mdholloway.wikitrends;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
-import jakarta.inject.Inject;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
@@ -13,9 +12,6 @@ import java.time.Duration;
 
 @ApplicationScoped
 public class StreamAnalyzerApp {
-
-    @Inject
-    RevertedRevisionStore revertedRevisionStore;
 
     @Produces
     public Topology buildTopology() {
@@ -38,11 +34,9 @@ public class StreamAnalyzerApp {
                 (revisionId, revisionCreate, tagsChange) -> revisionCreate,
                 JoinWindows.of(Duration.ofHours(1)),
                 StreamJoined.with(Serdes.Long(), revisionCreateSerde, tagsChangeSerde)
-        ); // .to("reverted-article-revisions");
+        );
 
-        // revertedRevisions.print(Printed.<Long, RevisionCreate>toSysOut().withLabel("reverted-revision-creates"));
-
-        revertedRevisions.foreach((revisionId, revertedRevision) -> revertedRevisionStore.create(revertedRevision));
+        revertedRevisions.to("reverted-revisions", Produced.with(Serdes.Long(), revisionCreateSerde));
 
         return builder.build();
     }

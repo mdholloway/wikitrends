@@ -1,18 +1,17 @@
 package org.mdholloway.wikitrends;
 
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
+import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 @ApplicationScoped
 public class RevertedRevisionStore {
 
     @Inject
-    private EntityManager entityManager;
+    private SessionFactory sessionFactory;
 
-    @Transactional
-    public void create(RevisionCreate revisionCreate) {
-        entityManager.persist(RevertedRevision.from(revisionCreate));
+    public Uni<Void> create(RevisionCreate revisionCreate) {
+        return sessionFactory.withTransaction(session -> session.persist(RevertedRevision.from(revisionCreate)));
     }
 }
