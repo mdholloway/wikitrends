@@ -1,12 +1,13 @@
 package org.mdholloway.wikitrends;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 
 @Entity
-public class RevertedRevision {
+public class RevertedRevision extends PanacheEntity {
 
     private long id;
     private String wiki;

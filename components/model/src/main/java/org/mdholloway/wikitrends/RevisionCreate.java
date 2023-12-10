@@ -1,9 +1,6 @@
 package org.mdholloway.wikitrends;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.time.Instant;
 
 // https://schema.wikimedia.org/repositories/primary/jsonschema/mediawiki/revision/create/2.0.0.yaml
 // TODO (someday): Fetch schema(s) and create data class(es) for Jackson dynamically

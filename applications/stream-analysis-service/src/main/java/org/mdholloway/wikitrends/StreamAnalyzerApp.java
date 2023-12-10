@@ -38,9 +38,9 @@ public class StreamAnalyzerApp {
                 (revisionId, revisionCreate, tagsChange) -> revisionCreate,
                 JoinWindows.of(Duration.ofHours(1)),
                 StreamJoined.with(Serdes.Long(), revisionCreateSerde, tagsChangeSerde)
-        ); //.to("reverted-article-revisions");
+        ); // .to("reverted-article-revisions");
 
-        revertedRevisions.print(Printed.<Long, RevisionCreate>toSysOut().withLabel("reverted-revision-creates"));
+        // revertedRevisions.print(Printed.<Long, RevisionCreate>toSysOut().withLabel("reverted-revision-creates"));
 
         revertedRevisions.foreach((revisionId, revertedRevision) -> revertedRevisionStore.create(revertedRevision));
 
