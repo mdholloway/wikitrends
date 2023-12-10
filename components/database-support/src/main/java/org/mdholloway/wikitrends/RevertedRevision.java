@@ -1,26 +1,31 @@
 package org.mdholloway.wikitrends;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 
 @Entity
-public class RevertedRevision extends PanacheEntity {
+public class RevertedRevision {
 
+    long id;
     private String wiki;
     private long pageId;
     private String pageTitle;
     private long revisionId;
 
-    public static RevertedRevision from(RevisionCreate revisionCreate) {
-        return new RevertedRevision.Builder()
-                .setWiki(revisionCreate.database)
-                .setPageId(revisionCreate.pageId)
-                .setPageTitle(revisionCreate.pageTitle)
-                .setRevisionId(revisionCreate.revisionId)
-                .build();
+    public RevertedRevision() {}
+
+    @Id
+    @SequenceGenerator(name = "idSequence", sequenceName = "revision_id_sequence", allocationSize = 1)
+    @GeneratedValue(generator = "idSequence")
+    public long getId() {
+        return id;
     }
 
-    public RevertedRevision() {}
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getWiki() {
         return wiki;
@@ -52,6 +57,15 @@ public class RevertedRevision extends PanacheEntity {
 
     public void setRevisionId(long revisionId) {
         this.revisionId = revisionId;
+    }
+
+    public static RevertedRevision from(RevisionCreate revisionCreate) {
+        return new RevertedRevision.Builder()
+                .setWiki(revisionCreate.database)
+                .setPageId(revisionCreate.pageId)
+                .setPageTitle(revisionCreate.pageTitle)
+                .setRevisionId(revisionCreate.revisionId)
+                .build();
     }
 
     public static class Builder {

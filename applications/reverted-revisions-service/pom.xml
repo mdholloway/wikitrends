@@ -36,16 +36,11 @@
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-arc</artifactId>
+      <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.ws.rs</groupId>
-      <artifactId>jakarta.ws.rs-api</artifactId>
-      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.mdholloway</groupId>
@@ -55,6 +50,11 @@
     <dependency>
       <groupId>org.mdholloway</groupId>
       <artifactId>wikitrends-kafka-support</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mdholloway</groupId>
+      <artifactId>wikitrends-rest-support</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>

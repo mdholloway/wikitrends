@@ -16,6 +16,8 @@ services:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       timeout: 5s
       retries: 10
+    networks:
+      - kafkastreams-network
 
   zookeeper:
     image: strimzi/kafka:0.19.0-kafka-2.5.0
@@ -91,6 +93,8 @@ services:
       dockerfile: src/main/docker/Dockerfile.${QUARKUS_MODE:-jvm}
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "8081:8081"
     networks:
       - kafkastreams-network
 
