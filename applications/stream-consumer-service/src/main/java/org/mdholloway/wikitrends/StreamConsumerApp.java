@@ -6,7 +6,6 @@ import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.reactive.messaging.kafka.Record;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -17,11 +16,10 @@ import java.util.Optional;
 @ApplicationScoped
 public class StreamConsumerApp {
 
+    private static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     @RestClient
     private EventStreamsService eventStreamsService;
-
-    @Inject
-    private ObjectMapper objectMapper;
 
     @Outgoing("article-revision-creates")
     public Multi<Record<Long, RevisionCreate>> produceArticleRevisionCreates() {
@@ -51,20 +49,20 @@ public class StreamConsumerApp {
                 });
     }
 
-    private <T> Optional<T> parse(String message, Class<T> clazz) {
+    protected static <T> Optional<T> parse(String message, Class<T> clazz) {
         try {
-            return Optional.of(objectMapper.readValue(message, clazz));
+            return Optional.of(OBJECT_MAPPER.readValue(message, clazz));
         } catch (JsonProcessingException e) {
             Log.error(e);
             return Optional.empty();
         }
     }
 
-    private static boolean isArticle(MediaWikiEvent event) {
+    protected static boolean isArticle(MediaWikiEvent event) {
         return event.getNamespaceId() == 0;
     }
 
-    private static boolean tagWasAdded(TagsChange tagsChange, String tag) {
+    protected static boolean tagWasAdded(TagsChange tagsChange, String tag) {
         List<String> oldTags = Arrays.asList(tagsChange.priorState.tags);
         List<String> newTags = Arrays.asList(tagsChange.tags);
         return newTags.contains(tag) && !oldTags.contains(tag);
