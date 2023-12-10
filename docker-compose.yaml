@@ -7,6 +7,15 @@ services:
       - mysqldata:/bitnami/mysql
     ports:
       - "3306:3306"
+    environment:
+      ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_USER: hibernate
+      MYSQL_PASSWORD: hibernate
+      MYSQL_DATABASE: hibernate_db
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 5s
+      retries: 10
 
   zookeeper:
     image: strimzi/kafka:0.19.0-kafka-2.5.0
@@ -42,7 +51,10 @@ services:
 
   stream-consumer-service:
     depends_on:
-      - kafka
+      kafka:
+        condition: service_started
+      mysql:
+        condition: service_healthy
     image: stream-consumer-service:1.0
     build:
       context: applications/stream-consumer-service
@@ -54,8 +66,10 @@ services:
 
   stream-analysis-service:
     depends_on:
-      - kafka
-      - mysql
+      kafka:
+        condition: service_started
+      mysql:
+        condition: service_healthy
     image: stream-analysis-service:1.0
     build:
       context: applications/stream-analysis-service

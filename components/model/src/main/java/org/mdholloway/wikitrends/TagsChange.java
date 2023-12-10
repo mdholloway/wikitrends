@@ -17,7 +17,6 @@ public class TagsChange implements MediaWikiEvent {
     public Performer performer;
     public String[] tags;
     @JsonProperty("prior_state") public PriorState priorState;
-    public Meta meta;
 
     @Override
     public int getNamespaceId() {
@@ -31,10 +30,5 @@ public class TagsChange implements MediaWikiEvent {
 
     public static class PriorState {
         public String[] tags;
-    }
-
-    public static class Meta {
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
-        public Instant dt;
     }
 }

@@ -33,14 +33,14 @@ public class StreamAnalyzerApp {
                 Consumed.with(Serdes.Long(), tagsChangeSerde)
         );
 
-        KStream<Long, RevertedRevision> revertedRevisions = revisionCreates.join(
+        KStream<Long, RevisionCreate> revertedRevisions = revisionCreates.join(
                 tagsChanges,
-                (revisionId, revisionCreate, tagsChange) -> RevertedRevision.from(revisionCreate, tagsChange),
+                (revisionId, revisionCreate, tagsChange) -> revisionCreate,
                 JoinWindows.of(Duration.ofHours(1)),
                 StreamJoined.with(Serdes.Long(), revisionCreateSerde, tagsChangeSerde)
         ); //.to("reverted-article-revisions");
 
-        revertedRevisions.print(Printed.<Long, RevertedRevision>toSysOut().withLabel("reverted-revisions"));
+        revertedRevisions.print(Printed.<Long, RevisionCreate>toSysOut().withLabel("reverted-revision-creates"));
 
         revertedRevisions.foreach((revisionId, revertedRevision) -> revertedRevisionStore.create(revertedRevision));
 

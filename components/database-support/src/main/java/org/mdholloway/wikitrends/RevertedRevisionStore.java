@@ -12,7 +12,7 @@ public class RevertedRevisionStore {
     private EntityManager entityManager;
 
     @Transactional
-    public void create(RevertedRevision revertedRevision) {
-        entityManager.persist(revertedRevision);
+    public void create(RevisionCreate revisionCreate) {
+        entityManager.persist(RevertedRevision.from(revisionCreate));
     }
 }

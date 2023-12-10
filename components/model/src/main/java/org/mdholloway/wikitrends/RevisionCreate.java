@@ -13,9 +13,6 @@ public class RevisionCreate implements MediaWikiEvent {
     @JsonProperty("page_title") public String pageTitle;
     @JsonProperty("page_namespace") public int pageNamespace;
     @JsonProperty("rev_id") public long revisionId;
-    @JsonProperty("rev_timestamp")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
-    public Instant revisionTimestamp;
     public Performer performer;
 
     @Override

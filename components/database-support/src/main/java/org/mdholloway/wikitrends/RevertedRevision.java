@@ -1,34 +1,33 @@
 package org.mdholloway.wikitrends;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-
-import java.time.Instant;
+import jakarta.persistence.SequenceGenerator;
 
 @Entity
 public class RevertedRevision {
 
     private long id;
-    private String database;
+    private String wiki;
     private long pageId;
     private String pageTitle;
-    private int pageNamespace;
-    private Instant createdAt;
-    private Instant revertedAt;
+    private long revisionId;
 
-    public static RevertedRevision from(RevisionCreate revisionCreate, TagsChange tagsChange) {
+    public static RevertedRevision from(RevisionCreate revisionCreate) {
         return new RevertedRevision.Builder()
-                .setId(revisionCreate.revisionId)
-                .setDatabase(revisionCreate.database)
+                .setWiki(revisionCreate.database)
                 .setPageId(revisionCreate.pageId)
                 .setPageTitle(revisionCreate.pageTitle)
-                .setPageNamespace(revisionCreate.pageNamespace)
-                .setCreatedAt(revisionCreate.revisionTimestamp)
-                .setRevertedAt(tagsChange.meta.dt)
+                .setRevisionId(revisionCreate.revisionId)
                 .build();
     }
 
+    public RevertedRevision() {}
+
     @Id
+    @SequenceGenerator(name = "idSequence", sequenceName = "id_seq", allocationSize = 1)
+    @GeneratedValue(generator = "idSequence")
     public long getId() {
         return id;
     }
@@ -37,12 +36,12 @@ public class RevertedRevision {
         this.id = id;
     }
 
-    public String getDatabase() {
-        return database;
+    public String getWiki() {
+        return wiki;
     }
 
-    public void setDatabase(String database) {
-        this.database = database;
+    public void setWiki(String wiki) {
+        this.wiki = wiki;
     }
 
     public long getPageId() {
@@ -61,46 +60,22 @@ public class RevertedRevision {
         this.pageTitle = pageTitle;
     }
 
-    public int getPageNamespace() {
-        return pageNamespace;
+    public long getRevisionId() {
+        return revisionId;
     }
 
-    public void setPageNamespace(int pageNamespace) {
-        this.pageNamespace = pageNamespace;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Instant getRevertedAt() {
-        return revertedAt;
-    }
-
-    public void setRevertedAt(Instant revertedAt) {
-        this.revertedAt = revertedAt;
+    public void setRevisionId(long revisionId) {
+        this.revisionId = revisionId;
     }
 
     public static class Builder {
-        private long id;
-        private String database;
+        private String wiki;
         private long pageId;
         private String pageTitle;
-        private int pageNamespace;
-        private Instant createdAt;
-        private Instant revertedAt;
+        private long revisionId;
 
-        public Builder setId(long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder setDatabase(String database) {
-            this.database = database;
+        public Builder setWiki(String wiki) {
+            this.wiki = wiki;
             return this;
         }
 
@@ -114,33 +89,20 @@ public class RevertedRevision {
             return this;
         }
 
-        public Builder setPageNamespace(int pageNamespace) {
-            this.pageNamespace = pageNamespace;
-            return this;
-        }
-
-        public Builder setCreatedAt(Instant createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public Builder setRevertedAt(Instant revertedAt) {
-            this.revertedAt = revertedAt;
+        public Builder setRevisionId(long revisionId) {
+            this.revisionId = revisionId;
             return this;
         }
 
         public RevertedRevision build() {
-            return new RevertedRevision(id, database, pageId, pageTitle, pageNamespace, createdAt, revertedAt);
+            return new RevertedRevision(wiki, pageId, pageTitle, revisionId);
         }
     }
 
-    private RevertedRevision(long id, String database, long pageId, String pageTitle, int pageNamespace, Instant createdAt, Instant revertedAt) {
-        this.id = id;
-        this.database = database;
+    private RevertedRevision(String wiki, long pageId, String pageTitle, long revisionId) {
+        this.wiki = wiki;
         this.pageId = pageId;
         this.pageTitle = pageTitle;
-        this.pageNamespace = pageNamespace;
-        this.createdAt = createdAt;
-        this.revertedAt = revertedAt;
+        this.revisionId = revisionId;
     }
 }
