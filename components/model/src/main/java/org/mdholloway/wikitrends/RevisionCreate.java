@@ -2,6 +2,8 @@ package org.mdholloway.wikitrends;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Objects;
+
 // https://schema.wikimedia.org/repositories/primary/jsonschema/mediawiki/revision/create/2.0.0.yaml
 // TODO (someday): Fetch schema(s) and create data class(es) for Jackson dynamically
 public class RevisionCreate implements MediaWikiEvent {
@@ -25,5 +27,18 @@ public class RevisionCreate implements MediaWikiEvent {
     @Override
     public String toString() {
         return database + "_" + pageTitle + "_" + revisionId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RevisionCreate that = (RevisionCreate) o;
+        return pageId == that.pageId && pageNamespace == that.pageNamespace && revisionId == that.revisionId && Objects.equals(database, that.database) && Objects.equals(pageTitle, that.pageTitle) && Objects.equals(performer, that.performer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(database, pageId, pageTitle, pageNamespace, revisionId, performer);
     }
 }
