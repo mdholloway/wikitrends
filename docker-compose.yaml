@@ -1,19 +1,19 @@
 version: '3.5'
 
 services:
-  mysql:
-    image: bitnami/mysql:latest
+  postgresql:
+    image: bitnami/postgresql:latest
     volumes:
-      - mysqldata:/bitnami/mysql
+      - postgresqldata:/bitnami/postgresql
     ports:
-      - "3306:3306"
+      - "5432:5432"
     environment:
-      ALLOW_EMPTY_PASSWORD: yes
-      MYSQL_USER: hibernate
-      MYSQL_PASSWORD: hibernate
-      MYSQL_DATABASE: hibernate_db
+      POSTGRESQL_USER: hibernate
+      POSTGRESQL_PASSWORD: hibernate
+      POSTGRESQL_DATABASE: hibernate_db
     healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      test: [ "CMD", "pg_isready", "-U", "hibernate", "-d", "hibernate_db" ]
+      interval: 10s
       timeout: 5s
       retries: 10
     networks:
@@ -55,7 +55,7 @@ services:
     depends_on:
       kafka:
         condition: service_started
-      mysql:
+      postgresql:
         condition: service_healthy
     image: stream-consumer-service:1.0
     build:
@@ -72,7 +72,7 @@ services:
     depends_on:
       kafka:
         condition: service_started
-      mysql:
+      postgresql:
         condition: service_healthy
     image: stream-analysis-service:1.0
     build:
@@ -89,7 +89,7 @@ services:
     depends_on:
       kafka:
         condition: service_started
-      mysql:
+      postgresql:
         condition: service_healthy
     image: reverted-revisions-service:1.0
     build:
@@ -107,5 +107,5 @@ networks:
     name: ks
 
 volumes:
-  mysqldata:
+  postgresqldata:
     driver: local
