@@ -2,7 +2,7 @@
 
 ## Motivation
 
-As a large corpus of user-generated text content, Wikipedia is a source of data for large web services like Google and for training machine learning models. It is therefore important that Wikipedia remains a source of high-quality content. This project is envisioned as a tool for Wikipedia admins that consumes and processes public streams of Wikipedia change data to detect new article revisions that are reverted shortly after being made. A high number of quickly-reverted revisions on an article could indicate [edit-warring](https://en.wikipedia.org/wiki/Wikipedia:Edit_warring) or the need for [article protection](https://en.wikipedia.org/wiki/Wikipedia:Protection_policy).
+As a large corpus of user-generated text content, Wikipedia is a source of data for large web services like Google and for training machine learning models. It is therefore important that Wikipedia remains a source of high-quality content. This project is envisioned as a tool for Wikipedia admins that consumes and processes public streams of Wikipedia change data to detect article revisions that are reverted shortly after being made. A large number of quickly reverted revisions on an article could indicate [edit-warring](https://en.wikipedia.org/wiki/Wikipedia:Edit_warring) or the need for [article protection](https://en.wikipedia.org/wiki/Wikipedia:Protection_policy).
 
 ## Quickstart
 ```
