@@ -17,6 +17,6 @@ public class RevertedRevisionsResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<List<RevertedRevision>> getRevertedRevisions() {
-        return revertedRevisionStore.getAll();
+        return revertedRevisionStore.getLast(10);
     }
 }

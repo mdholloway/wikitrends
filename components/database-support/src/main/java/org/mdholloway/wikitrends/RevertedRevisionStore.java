@@ -5,6 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
 
 import java.util.List;
@@ -19,12 +20,13 @@ public class RevertedRevisionStore {
         return sessionFactory.withTransaction(session -> session.persist(RevertedRevision.from(revisionCreate)));
     }
 
-    public Uni<List<RevertedRevision>> getAll() {
+    public Uni<List<RevertedRevision>> getLast(int limit) {
         return sessionFactory.withTransaction(session -> {
             CriteriaBuilder criteriaBuilder = sessionFactory.getCriteriaBuilder();
             CriteriaQuery<RevertedRevision> query = criteriaBuilder.createQuery(RevertedRevision.class);
-            query.from(RevertedRevision.class);
-            return session.createQuery(query).getResultList();
+            Root<RevertedRevision> root = query.from(RevertedRevision.class);
+            query.orderBy(criteriaBuilder.desc(root.get("id")));
+            return session.createQuery(query).setFirstResult(0).setMaxResults(limit).getResultList();
         });
     }
 }
