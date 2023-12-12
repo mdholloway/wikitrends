@@ -1,5 +1,7 @@
 package org.mdholloway.wikitrends;
 
+import io.quarkus.test.InjectMock;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
