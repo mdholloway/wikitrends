@@ -28,12 +28,15 @@ Health check endpoints are exposed for each service:
 ```
 Test source code can be found under `src/test/` and `src/integrationTest/` in the application directories.
 
+## Requirements
+
+The main contribution of this project is that it can detect recently-reverted revisions in near-real-time. The requirement to support near-real-time data processing led naturally to a stream processing system design. I chose Kafka for communication between the services because I am familiar with it and because it supports high throughput and low latency requirements. For data storage I just needed a simple relational database. I initially chose MySQL but switched to Postgres because it is the default on Heroku. The storage requirements are simple, and a NoSQL database would have worked as well.
+
+I chose the [Quarkus](https://quarkus.io/) framework because it has great support for reactive programming, is built with containerization in mind, and because it provides useful functionality like health checks essentially out of the box. In this way Quarkus helps to support the non-functional requirements in the  project rubric.
+
 ## Architecture
 
 The system consists of three applications, `stream-consumer-service`, `stream-analysis-service`, and `reverted-revisions-service`, which communicate with one another using Kafka. `stream-consumer-service` consumes public revision and tag-change data streams provided by the Wikimedia [EventStreams](https://wikitech.wikimedia.org/wiki/Event_Platform/EventStreams) service, filters those streams for events of interest, and passes those events along to `stream-analysis-service` via Kafka topics. `stream-analysis-service` is a Kafka Streams application that performs a windowed join on the streams to detect revisions that have a `mw-reverted` tag added, indicating that the article was reverted, within an hour of being created. Revisions reverted within the window are forwarded via Kafka to `reverted-revisions-service`, which stores them in Postgres for further analysis and exposes a simple API to the web.
-
-All three applications run on the JVM and are built with the [Quarkus](https://quarkus.io/) framework.
-
 
 ## Production deployment
 
