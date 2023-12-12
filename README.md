@@ -30,7 +30,7 @@ Test source code can be found under `src/test/` and `src/integrationTest/` in th
 
 ## Requirements
 
-The main contribution of this project is that it can detect recently-reverted revisions in near-real-time. The requirement to support near-real-time data processing led naturally to a stream processing system design. I chose Kafka for communication between the services because I am familiar with it and because it supports high throughput and low latency requirements. For data storage I just needed a simple relational database. I initially chose MySQL but switched to Postgres because it is the default on Heroku. The storage requirements are simple, and a NoSQL database would have worked as well.
+The main contribution of this project is that it can detect quickly-reverted revisions in near-real-time. The requirement to support near-real-time data processing led naturally to a stream processing system design. I chose Kafka for communication between the services because I am familiar with it and because it supports high throughput and low latency requirements. For data storage I just needed a simple relational database. I initially chose MySQL but switched to Postgres because it is the default on Heroku. The storage requirements are simple, and a NoSQL database would have worked as well.
 
 I chose the [Quarkus](https://quarkus.io/) framework because it has great support for reactive programming, is built with containerization in mind, and because it provides useful functionality like health checks essentially out of the box. In this way Quarkus helps to support the non-functional requirements in the  project rubric.
 
