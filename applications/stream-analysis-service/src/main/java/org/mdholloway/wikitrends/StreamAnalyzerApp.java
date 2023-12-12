@@ -98,7 +98,7 @@ public class StreamAnalyzerApp {
                     SSL_KEYSTORE_PASSWORD_CONFIG, envKeyStore.password()
             ));
         } catch (Exception e) {
-            Log.error("Problem creating keystore");
+            Log.error("Problem creating keystore", e);
         }
 
         return properties;
