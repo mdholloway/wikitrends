@@ -7,11 +7,13 @@ import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Produces;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 import java.io.File;
 import java.time.Duration;
@@ -31,21 +33,29 @@ public class StreamAnalyzerApp {
     private KafkaStreams kafkaStreams;
 
     void onStart(@Observes StartupEvent startupEvent) {
-        kafkaStreams = new KafkaStreams(buildTopology(), buildConfig());
-        kafkaStreams.start();
+        if (getenv("KAFKA_PREFIX") != null) {
+            kafkaStreams = new KafkaStreams(buildTopology(), buildHerokuConfig());
+            kafkaStreams.start();
+        }
     }
 
     void onStop(@Observes ShutdownEvent shutdownEvent) {
-        kafkaStreams.close();
+        if (getenv("KAFKA_PREFIX") != null) {
+            kafkaStreams.close();
+        }
     }
 
-    private static Topology buildTopology() {
+    @Produces
+    public Topology buildTopology() {
         StreamsBuilder builder = new StreamsBuilder();
 
         ObjectMapperSerde<RevisionCreate> revisionCreateSerde = new ObjectMapperSerde<>(RevisionCreate.class);
         ObjectMapperSerde<TagsChange> tagsChangeSerde = new ObjectMapperSerde<>(TagsChange.class);
 
         String kafkaPrefix = getenv("KAFKA_PREFIX");
+        if (kafkaPrefix == null) {
+            kafkaPrefix = "";
+        }
 
         KStream<Long, RevisionCreate> revisionCreates = builder.stream(
                 kafkaPrefix + "article-revision-creates",
@@ -69,17 +79,24 @@ public class StreamAnalyzerApp {
         return builder.build();
     }
 
-    private static Properties buildConfig() {
+    private static Properties buildHerokuConfig() {
         Properties properties = new Properties();
         String kafkaUrl = getenv("KAFKA_URL");
         String kafkaPrefix = getenv("KAFKA_PREFIX");
 
         properties.putAll(Map.of(
-                BOOTSTRAP_SERVERS_CONFIG, kafkaUrl.isEmpty() ? "localhost:9092" : kafkaUrl,
-                APPLICATION_ID_CONFIG, kafkaPrefix + "wikitrends-stream-analysis-app",
+                BOOTSTRAP_SERVERS_CONFIG, kafkaUrl == null || kafkaUrl.isEmpty() ? "localhost:9092" : kafkaUrl,
                 DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Long().getClass().getName(),
                 DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName()
         ));
+
+        // HACK: Bail out now if we're not in Heroku
+        if (kafkaPrefix == null) {
+            properties.put(APPLICATION_ID_CONFIG, ConfigProvider.getConfig().getConfigValue("quarkus.application.name").getValue());
+            return properties;
+        }
+
+        properties.put(APPLICATION_ID_CONFIG, kafkaPrefix + "wikitrends-stream-analysis-app");
 
         try {
             EnvKeyStore envTrustStore = EnvKeyStore.createWithRandomPassword("KAFKA_TRUSTED_CERT");
