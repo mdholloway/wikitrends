@@ -44,4 +44,4 @@ Health check endpoints:
 * `stream-analysis-service`: https://wikitrends-stream-analysis-0cbfeb7dae93.herokuapp.com/q/health
 * `stream-consumer-service`: https://wikitrends-stream-consumer-2de121ebdc3a.herokuapp.com/q/health
 
-NOTE: The health check for `stream-analysis-service` is currently reporting `DOWN` because the Kafka Streams app is initialized in a nonstandard way in Heroku in order to provide the required SSL configuration.
+NOTE: The health check for `stream-analysis-service` is currently reporting `DOWN` because the Kafka Streams app is initialized in a nonstandard way in Heroku in order to provide the required SSL configuration for connecting to the Kafka broker.
